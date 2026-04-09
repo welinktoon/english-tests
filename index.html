@@ -104,6 +104,11 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
 }
 .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
 .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+/* Status filter colors */
+#status-filters .filter-btn.active[data-status="done"] { background: #00b894; border-color: #00b894; }
+#status-filters .filter-btn.active[data-status="todo"] { background: #e17055; border-color: #e17055; }
+#status-filters .filter-btn:hover[data-status="done"] { border-color: #00b894; color: #00b894; }
+#status-filters .filter-btn:hover[data-status="todo"] { border-color: #e17055; color: #e17055; }
 .no-results {
   text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: .95rem;
 }
