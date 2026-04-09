@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Tests — Beginner</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; color: #1a1a2e; line-height: 1.6; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 20px; }
+header { text-align: center; padding: 30px 0 20px; }
+header h1 { font-size: 2rem; color: #2d3436; }
+header p { color: #636e72; margin-top: 6px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
+.card {
+  background: #fff; border-radius: 12px; padding: 20px; cursor: pointer;
+  border: 2px solid transparent; transition: all .2s; position: relative; height: 100%;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.card:hover { border-color: #6c5ce7; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,92,231,.15); }
+.card h3 { font-size: 1.05rem; margin-bottom: 6px; }
+.card .desc { font-size: .85rem; color: #636e72; flex-grow: 1; }
+.card .badge {
+  display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 20px;
+  font-size: .78rem; font-weight: 600;
+}
+.badge.none { background: #dfe6e9; color: #636e72; }
+.badge.low { background: #ffeaa7; color: #6c5200; }
+.badge.mid { background: #81ecec; color: #005f5f; }
+.badge.high { background: #55efc4; color: #004d30; }
+
+/* Test view */
+#test-view { display: none; }
+.back-btn {
+  background: none; border: none; font-size: 1rem; color: #6c5ce7; cursor: pointer;
+  margin-bottom: 16px; font-weight: 600;
+}
+.back-btn:hover { text-decoration: underline; }
+.progress-bar { background: #dfe6e9; border-radius: 8px; height: 8px; margin-bottom: 20px; }
+.progress-fill { height: 100%; background: #6c5ce7; border-radius: 8px; transition: width .3s; }
+.question-card {
+  background: #fff; border-radius: 12px; padding: 28px; max-width: 700px; margin: 0 auto;
+}
+.q-counter { font-size: .85rem; color: #636e72; margin-bottom: 8px; }
+.q-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt-btn {
+  background: #f8f9fa; border: 2px solid #dfe6e9; border-radius: 10px; padding: 14px 18px;
+  font-size: 1rem; cursor: pointer; text-align: left; transition: all .15s;
+}
+.opt-btn:hover { border-color: #6c5ce7; background: #f0edff; }
+.opt-btn.correct { border-color: #00b894; background: #d4fce8; }
+.opt-btn.wrong { border-color: #d63031; background: #ffe0e0; }
+.opt-btn.disabled { pointer-events: none; opacity: .7; }
+.opt-btn.disabled.correct { opacity: 1; }
+.next-btn {
+  display: none; margin-top: 16px; background: #6c5ce7; color: #fff; border: none;
+  padding: 12px 28px; border-radius: 10px; font-size: 1rem; cursor: pointer; font-weight: 600;
+}
+.next-btn:hover { background: #5a4bd1; }
+
+/* Result */
+.result-card {
+  background: #fff; border-radius: 12px; padding: 36px; max-width: 500px; margin: 0 auto; text-align: center;
+}
+.result-card .score { font-size: 3rem; font-weight: 700; color: #6c5ce7; }
+.result-card .pct { font-size: 1.3rem; color: #636e72; margin: 8px 0 20px; }
+.result-card .msg { font-size: 1.1rem; margin-bottom: 20px; }
+.result-card .best-note { font-size: .9rem; color: #00b894; margin-bottom: 16px; }
+.btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-row button {
+  padding: 12px 24px; border-radius: 10px; font-size: 1rem; cursor: pointer; font-weight: 600; border: none;
+}
+.btn-retry { background: #6c5ce7; color: #fff; }
+.btn-retry:hover { background: #5a4bd1; }
+.btn-home { background: #dfe6e9; color: #2d3436; }
+.btn-home:hover { background: #c8d6db; }
+
+/* Stats bar */
+.stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 20px 0; }
+.stat-item { background: #fff; border-radius: 10px; padding: 12px 20px; text-align: center; min-width: 120px; }
+.stat-item .val { font-size: 1.5rem; font-weight: 700; color: #6c5ce7; }
+.stat-item .lbl { font-size: .8rem; color: #636e72; }
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  header h1 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- Main view -->
+  <div id="main-view">
+    <header>
+      <h1>English Tests — Beginner</h1>
+      <p>Выбери тему и проверь свои знания</p>
+    </header>
+    <div class="stats" id="global-stats"></div>
+    <div class="grid" id="topics-grid"></div>
+  </div>
+
+  <!-- Test view -->
+  <div id="test-view">
+    <button class="back-btn" onclick="goHome()">&larr; К списку тестов</button>
+    <h2 id="test-title" style="margin-bottom:16px"></h2>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div id="question-area"></div>
+  </div>
+</div>
+
+<script>
+// === DATA ===
+const tests = [
+  {
+    id: 1, title: "Possessive Case", desc: "Притяжательный падеж — 's и '",
+    questions: [
+      { q: "Выберите правильный вариант: ___ dresses (girl)", opts: ["girl's", "girls'", "girls", "girl"], ans: 0 },
+      { q: "Выберите правильный вариант: my ___ ideas (friends)", opts: ["friend's", "friends'", "friends's", "friend"], ans: 1 },
+      { q: "Как правильно: игрушки детей?", opts: ["children's toys", "childrens' toys", "childrens toys", "children toys"], ans: 0 },
+      { q: "Kate and Jim's house означает:", opts: ["Общий дом Кейт и Джима", "Дом Кейт и отдельный дом Джима", "Дом рядом с Кейт и Джимом", "Дом без хозяев"], ans: 0 },
+      { q: "Как правильно: комната Джеймса?", opts: ["James's room / James' room", "Jame's room", "James room", "Jamess' room"], ans: 0 },
+      { q: "___ suits (men)", opts: ["men's", "mens'", "mens", "men"], ans: 0 },
+      { q: "___ secrets (women)", opts: ["women's", "womens'", "womens", "women"], ans: 0 },
+    ]
+  },
+  {
+    id: 2, title: "Describing People", desc: "Внешность и описание людей",
+    questions: [
+      { q: "She ___ long dark hair.", opts: ["has", "have", "is", "are"], ans: 0 },
+      { q: "He ___ tall and slim.", opts: ["is", "has", "have", "are"], ans: 0 },
+      { q: "Переведите: у неё голубые глаза", opts: ["She has blue eyes", "She is blue eyes", "She have blue eyes", "Her blue eyes"], ans: 0 },
+      { q: "They ___ very friendly.", opts: ["are", "is", "has", "have"], ans: 0 },
+      { q: "Как спросить 'Как он выглядит?'", opts: ["What does he look like?", "How does he look like?", "What is he look?", "How he looks?"], ans: 0 },
+    ]
+  },
+  {
+    id: 3, title: "Clothes", desc: "Одежда — названия предметов",
+    questions: [
+      { q: "Переведите: платье", opts: ["dress", "skirt", "shirt", "blouse"], ans: 0 },
+      { q: "Переведите: джинсы", opts: ["jeans", "trousers", "shorts", "pants"], ans: 0 },
+      { q: "Переведите: пальто", opts: ["coat", "jacket", "sweater", "vest"], ans: 0 },
+      { q: "Что такое 'sweater'?", opts: ["свитер", "рубашка", "шорты", "юбка"], ans: 0 },
+      { q: "Что такое 'skirt'?", opts: ["юбка", "платье", "шарф", "брюки"], ans: 0 },
+      { q: "Переведите: футболка", opts: ["T-shirt", "shirt", "top", "vest"], ans: 0 },
+    ]
+  },
+  {
+    id: 4, title: "Have / Has", desc: "Глагол иметь — have, has, вопросы",
+    questions: [
+      { q: "I ___ a small kitchen.", opts: ["have", "has", "am", "is"], ans: 0 },
+      { q: "She ___ two cats.", opts: ["has", "have", "is", "are"], ans: 0 },
+      { q: "___ you have a car?", opts: ["Do", "Does", "Are", "Is"], ans: 0 },
+      { q: "He ___ a big house.", opts: ["doesn't have", "don't have", "hasn't", "haven't"], ans: 0 },
+      { q: "___ she have Italian speakers in the office?", opts: ["Does", "Do", "Is", "Has"], ans: 0 },
+    ]
+  },
+  {
+    id: 5, title: "Desk Objects", desc: "Предметы на столе и в офисе",
+    questions: [
+      { q: "Что такое 'notebook'?", opts: ["тетрадь/блокнот", "ноутбук", "книга", "папка"], ans: 0 },
+      { q: "Переведите: ручка", opts: ["pen", "pencil", "pin", "pan"], ans: 0 },
+      { q: "Что такое 'sticky notes'?", opts: ["стикеры", "наклейки", "закладки", "ярлыки"], ans: 0 },
+      { q: "There ___ a computer on my desk.", opts: ["is", "are", "have", "has"], ans: 0 },
+      { q: "There ___ two pens on the table.", opts: ["are", "is", "have", "has"], ans: 0 },
+    ]
+  },
+  {
+    id: 6, title: "Communication Phrases", desc: "Фразы для общения — переспросить, уточнить",
+    questions: [
+      { q: "Как переспросить вежливо?", opts: ["Sorry?", "What?", "Again!", "Repeat!"], ans: 0 },
+      { q: "Как попросить повторить?", opts: ["Can you repeat that?", "Say again!", "One more!", "Do repeat!"], ans: 0 },
+      { q: "Переведите: я не понимаю", opts: ["I don't understand", "I not understand", "I doesn't understand", "I am not understand"], ans: 0 },
+      { q: "Как сказать 'помедленнее, пожалуйста'?", opts: ["Can you speak more slowly?", "Speak slow!", "More slowly!", "Talk less fast!"], ans: 0 },
+      { q: "'What does ___ mean?' — вставьте пропущенное", opts: ["this", "it does", "is that", "that is"], ans: 0 },
+    ]
+  },
+  {
+    id: 7, title: "Daily Routine & Habits", desc: "Распорядок дня, привычки, Present Simple",
+    questions: [
+      { q: "She ___ coffee every day.", opts: ["drinks", "drink", "is drinking", "drinked"], ans: 0 },
+      { q: "I never ___ breakfast.", opts: ["eat", "eats", "eating", "am eat"], ans: 0 },
+      { q: "He ___ sports on weekends.", opts: ["plays", "play", "playing", "is play"], ans: 0 },
+      { q: "Переведите: она всегда голодная", opts: ["She is always hungry", "She always hungry", "She have always hungry", "She always is hungry"], ans: 0 },
+      { q: "___ you watch TV every evening?", opts: ["Do", "Does", "Are", "Is"], ans: 0 },
+    ]
+  },
+  {
+    id: 8, title: "Possessive with Names", desc: "Притяжательный падеж с именами людей",
+    questions: [
+      { q: "Ruby is ___ wife. (David)", opts: ["David's", "Davids", "Davids'", "David"], ans: 0 },
+      { q: "Max is ___ boyfriend. (Tatiana)", opts: ["Tatiana's", "Tatianas", "Tatianas'", "Tatiana"], ans: 0 },
+      { q: "This is ___ car. (Rick)", opts: ["Rick's", "Ricks", "Ricks'", "Rick"], ans: 0 },
+      { q: "Janette is ___ sister. (Max)", opts: ["Max's", "Maxs", "Max'", "Maxs'"], ans: 0 },
+      { q: "___ house is very big. (The Smiths)", opts: ["The Smiths'", "The Smith's", "The Smiths", "Smith's"], ans: 0 },
+    ]
+  },
+  {
+    id: 9, title: "Food & Drinks", desc: "Еда, напитки, фрукты, овощи",
+    questions: [
+      { q: "Переведите: яблоко", opts: ["apple", "orange", "apricot", "avocado"], ans: 0 },
+      { q: "Что такое 'carrot'?", opts: ["морковь", "капуста", "картошка", "кабачок"], ans: 0 },
+      { q: "Переведите: банан", opts: ["banana", "mango", "lemon", "melon"], ans: 0 },
+      { q: "Что такое 'potato'?", opts: ["картошка", "помидор", "морковь", "лук"], ans: 0 },
+      { q: "Переведите: сок", opts: ["juice", "water", "milk", "tea"], ans: 0 },
+      { q: "Что значит 'tasty'?", opts: ["вкусный", "солёный", "сладкий", "острый"], ans: 0 },
+      { q: "Что такое 'sea buckthorn'?", opts: ["облепиха", "морская капуста", "морской ёж", "шиповник"], ans: 0 },
+    ]
+  },
+  {
+    id: 10, title: "Feelings & Mood", desc: "Чувства, настроение, эмоции",
+    questions: [
+      { q: "How are you ___?", opts: ["feeling", "feel", "felt", "feels"], ans: 0 },
+      { q: "Переведите: я счастлива", opts: ["I am happy", "I have happy", "I am happily", "I happy"], ans: 0 },
+      { q: "Что значит 'upset'?", opts: ["расстроенный", "счастливый", "уставший", "злой"], ans: 0 },
+      { q: "Что значит 'tired'?", opts: ["уставший", "голодный", "скучающий", "грустный"], ans: 0 },
+      { q: "Что значит 'hungry'?", opts: ["голодный", "злой", "весёлый", "сонный"], ans: 0 },
+    ]
+  },
+  {
+    id: 11, title: "Adverbs of Frequency", desc: "always, usually, sometimes, often, never",
+    questions: [
+      { q: "Где стоит наречие частотности? 'I ___ have eggs for breakfast.'", opts: ["always", "always I", "have always", "I have"], ans: 0 },
+      { q: "Расставьте: she / usually / gets up / early", opts: ["She usually gets up early", "She gets usually up early", "Usually she gets up early", "She gets up usually early"], ans: 0 },
+      { q: "Что значит 'never'?", opts: ["никогда", "иногда", "всегда", "часто"], ans: 0 },
+      { q: "Что значит 'sometimes'?", opts: ["иногда", "всегда", "никогда", "часто"], ans: 0 },
+      { q: "I ___ drink coffee. (никогда)", opts: ["never", "don't never", "ever", "sometimes not"], ans: 0 },
+      { q: "He is ___ late for work.", opts: ["often", "oftens", "oftenly", "oft"], ans: 0 },
+    ]
+  },
+  {
+    id: 12, title: "Time", desc: "Который час? o'clock, half past, quarter",
+    questions: [
+      { q: "7:00 =", opts: ["seven o'clock", "seven hours", "seven zero", "seven past"], ans: 0 },
+      { q: "7:30 =", opts: ["half past seven", "seven and half", "half seven past", "thirty seven"], ans: 0 },
+      { q: "7:15 =", opts: ["quarter past seven", "quarter to seven", "seven fifteen past", "seven quarter"], ans: 0 },
+      { q: "6:45 =", opts: ["quarter to seven", "quarter past seven", "half to seven", "six forty-five past"], ans: 0 },
+      { q: "Что значит A.M.?", opts: ["до полудня", "после полудня", "полночь", "полдень"], ans: 0 },
+      { q: "Что значит P.M.?", opts: ["после полудня", "до полудня", "полночь", "утро"], ans: 0 },
+    ]
+  },
+  {
+    id: 13, title: "Days of the Week", desc: "Дни недели на английском",
+    questions: [
+      { q: "Переведите: понедельник", opts: ["Monday", "Tuesday", "Sunday", "Friday"], ans: 0 },
+      { q: "Переведите: среда", opts: ["Wednesday", "Thursday", "Tuesday", "Saturday"], ans: 0 },
+      { q: "Переведите: пятница", opts: ["Friday", "Thursday", "Monday", "Sunday"], ans: 0 },
+      { q: "Какой день идёт после Thursday?", opts: ["Friday", "Wednesday", "Saturday", "Sunday"], ans: 0 },
+      { q: "Как сказать 'в понедельник'?", opts: ["on Monday", "in Monday", "at Monday", "to Monday"], ans: 0 },
+      { q: "Переведите: воскресенье", opts: ["Sunday", "Saturday", "Monday", "Tuesday"], ans: 0 },
+    ]
+  },
+  {
+    id: 14, title: "Daily Actions", desc: "get up, leave home, have lunch, go to bed...",
+    questions: [
+      { q: "Переведите: вставать", opts: ["get up", "stand up", "wake up", "rise up"], ans: 0 },
+      { q: "Переведите: уходить из дома", opts: ["leave home", "go home", "exit home", "left home"], ans: 0 },
+      { q: "Что значит 'have dinner'?", opts: ["ужинать", "обедать", "завтракать", "перекусить"], ans: 0 },
+      { q: "Что значит 'go to bed'?", opts: ["ложиться спать", "идти в кровать", "уходить спать", "засыпать"], ans: 0 },
+      { q: "Переведите: готовить ужин", opts: ["cook dinner", "do dinner", "make lunch", "prepare eat"], ans: 0 },
+      { q: "Что значит 'watch TV'?", opts: ["смотреть телевизор", "включить ТВ", "выключить ТВ", "купить ТВ"], ans: 0 },
+    ]
+  },
+  {
+    id: 15, title: "Cafe & Breakfast", desc: "Кафе, меню, столовые приборы",
+    questions: [
+      { q: "Что такое 'fork'?", opts: ["вилка", "нож", "ложка", "тарелка"], ans: 0 },
+      { q: "Что такое 'knife'?", opts: ["нож", "вилка", "ложка", "стакан"], ans: 0 },
+      { q: "Что такое 'chopsticks'?", opts: ["палочки для еды", "зубочистки", "шпажки", "спички"], ans: 0 },
+      { q: "Что такое 'bowl'?", opts: ["миска", "тарелка", "чашка", "блюдце"], ans: 0 },
+      { q: "Как произносится 'croissant'?", opts: ["/kwɑːsɒ̃/", "/kroɪsænt/", "/kresant/", "/kruasant/"], ans: 0 },
+      { q: "Переведите: чашка кофе", opts: ["a cup of coffee", "a glass of coffee", "a mug of coffee", "a coffee cup"], ans: 0 },
+    ]
+  },
+  {
+    id: 16, title: "Likes & Preferences", desc: "I prefer, I would like, I would choose",
+    questions: [
+      { q: "I ___ coffee to tea.", opts: ["prefer", "would", "like more", "choose"], ans: 0 },
+      { q: "Переведите: я хотела бы...", opts: ["I would like to...", "I want like...", "I like would...", "I am liking..."], ans: 0 },
+      { q: "I would ___ pizza.", opts: ["choose", "choosing", "chose", "choosed"], ans: 0 },
+      { q: "What's your ___ meal of the day?", opts: ["favourite", "favouring", "most liked", "best liked"], ans: 0 },
+      { q: "Do you ___ go to cafes?", opts: ["often", "much", "many", "lot"], ans: 0 },
+    ]
+  }
+];
+
+// === COOKIES ===
+function setCookie(name, value, days) {
+  const d = new Date();
+  d.setTime(d.getTime() + days * 86400000);
+  document.cookie = name + "=" + encodeURIComponent(JSON.stringify(value)) + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
+}
+function getCookie(name) {
+  const v = document.cookie.split('; ').find(r => r.startsWith(name + '='));
+  if (!v) return null;
+  try { return JSON.parse(decodeURIComponent(v.split('=').slice(1).join('='))); } catch { return null; }
+}
+function getBestResults() { return getCookie('eng_best') || {}; }
+function saveBest(testId, pct, score, total) {
+  const best = getBestResults();
+  if (!best[testId] || pct > best[testId].pct) {
+    best[testId] = { pct, score, total, date: new Date().toLocaleDateString('ru') };
+  }
+  setCookie('eng_best', best, 365);
+}
+
+// === RENDER MAIN ===
+function renderMain() {
+  document.getElementById('main-view').style.display = '';
+  document.getElementById('test-view').style.display = 'none';
+  const best = getBestResults();
+  const grid = document.getElementById('topics-grid');
+
+  // Global stats
+  const done = Object.keys(best).length;
+  const avgPct = done ? Math.round(Object.values(best).reduce((s, b) => s + b.pct, 0) / done) : 0;
+  document.getElementById('global-stats').innerHTML = `
+    <div class="stat-item"><div class="val">${done}/${tests.length}</div><div class="lbl">Тестов пройдено</div></div>
+    <div class="stat-item"><div class="val">${avgPct}%</div><div class="lbl">Средний результат</div></div>
+  `;
+
+  grid.innerHTML = tests.map(t => {
+    const b = best[t.id];
+    let badgeClass = 'none', badgeText = 'не пройден';
+    if (b) {
+      badgeText = `${b.pct}% (${b.score}/${b.total})`;
+      badgeClass = b.pct >= 80 ? 'high' : b.pct >= 50 ? 'mid' : 'low';
+    }
+    return `<div class="card" onclick="startTest(${t.id})">
+      <div><h3>${t.id}. ${t.title}</h3><div class="desc">${t.desc}</div></div>
+      <div><span class="badge ${badgeClass}">${badgeText}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// === TEST LOGIC ===
+let current = null;
+let qIndex = 0;
+let correctCount = 0;
+
+function startTest(id) {
+  current = tests.find(t => t.id === id);
+  qIndex = 0;
+  correctCount = 0;
+  // Shuffle options for each question (keep track of correct answer)
+  current._shuffled = current.questions.map(q => {
+    const indices = q.opts.map((_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return { q: q.q, opts: indices.map(i => q.opts[i]), correctIdx: indices.indexOf(q.ans) };
+  });
+  document.getElementById('main-view').style.display = 'none';
+  document.getElementById('test-view').style.display = '';
+  document.getElementById('test-title').textContent = current.title + ' — ' + current.desc;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const total = current._shuffled.length;
+  document.getElementById('progress').style.width = ((qIndex / total) * 100) + '%';
+  if (qIndex >= total) return showResult();
+  const q = current._shuffled[qIndex];
+  document.getElementById('question-area').innerHTML = `
+    <div class="question-card">
+      <div class="q-counter">Вопрос ${qIndex + 1} из ${total}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${q.opts.map((o, i) =>
+        `<button class="opt-btn" onclick="answer(${i})">${o}</button>`
+      ).join('')}</div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">Далее &rarr;</button>
+    </div>`;
+}
+
+function answer(idx) {
+  const q = current._shuffled[qIndex];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === q.correctIdx) b.classList.add('correct');
+    if (i === idx && idx !== q.correctIdx) b.classList.add('wrong');
+  });
+  if (idx === q.correctIdx) correctCount++;
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+function nextQ() {
+  qIndex++;
+  renderQuestion();
+}
+
+function showResult() {
+  const total = current._shuffled.length;
+  const pct = Math.round((correctCount / total) * 100);
+  saveBest(current.id, pct, correctCount, total);
+  const best = getBestResults()[current.id];
+  const isNewBest = best.pct === pct;
+
+  let msg = '', emoji = '';
+  if (pct >= 90) { msg = 'Отлично!'; emoji = '&#127942;'; }
+  else if (pct >= 70) { msg = 'Хороший результат!'; emoji = '&#128170;'; }
+  else if (pct >= 50) { msg = 'Неплохо, но можно лучше'; emoji = '&#128221;'; }
+  else { msg = 'Стоит повторить тему'; emoji = '&#128218;'; }
+
+  document.getElementById('progress').style.width = '100%';
+  document.getElementById('question-area').innerHTML = `
+    <div class="result-card">
+      <div style="font-size:3rem">${emoji}</div>
+      <div class="score">${correctCount} / ${total}</div>
+      <div class="pct">${pct}% правильных ответов</div>
+      <div class="msg">${msg}</div>
+      ${isNewBest ? '<div class="best-note">Новый лучший результат!</div>' : `<div style="font-size:.85rem;color:#636e72;margin-bottom:12px">Лучший: ${best.pct}% (${best.date})</div>`}
+      <div class="btn-row">
+        <button class="btn-retry" onclick="startTest(${current.id})">Пройти заново</button>
+        <button class="btn-home" onclick="goHome()">К списку</button>
+      </div>
+    </div>`;
+}
+
+function goHome() { renderMain(); }
+
+// Init
+renderMain();
+</script>
+</body>
+</html>
