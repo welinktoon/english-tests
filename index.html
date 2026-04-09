@@ -185,11 +185,16 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
   <div class="stats" id="global-stats"></div>
   <div class="filters">
     <input type="text" class="search-input" id="search" placeholder="Поиск по теме...">
-    <div class="filter-btns">
+    <div class="filter-btns" id="diff-filters">
       <button class="filter-btn active" data-diff="all">Все</button>
       <button class="filter-btn" data-diff="easy">Легкие</button>
       <button class="filter-btn" data-diff="medium">Средние</button>
       <button class="filter-btn" data-diff="hard">Сложные</button>
+    </div>
+    <div class="filter-btns" id="status-filters">
+      <button class="filter-btn active" data-status="all">Все</button>
+      <button class="filter-btn" data-status="done">Пройденные</button>
+      <button class="filter-btn" data-status="todo">Не пройденные</button>
     </div>
   </div>
   <div class="grid" id="topics-grid"></div>
@@ -236,6 +241,7 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
   var grid = document.getElementById('topics-grid');
   var noResults = document.getElementById('no-results');
   var activeDiff = 'all';
+  var activeStatus = 'all';
   var searchText = '';
 
   function renderCards() {
@@ -244,7 +250,11 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
       var matchSearch = !searchText ||
         t.title.toLowerCase().indexOf(searchText) !== -1 ||
         t.desc.toLowerCase().indexOf(searchText) !== -1;
-      return matchDiff && matchSearch;
+      var isDone = !!best[t.id];
+      var matchStatus = activeStatus === 'all' ||
+        (activeStatus === 'done' && isDone) ||
+        (activeStatus === 'todo' && !isDone);
+      return matchDiff && matchSearch && matchStatus;
     });
 
     if (!filtered.length) {
@@ -278,6 +288,17 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
       filterBtns.forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
       activeDiff = btn.dataset.diff;
+      renderCards();
+    });
+  });
+
+  // Status filter buttons
+  var statusBtns = document.querySelectorAll('#status-filters .filter-btn');
+  statusBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      statusBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeStatus = btn.dataset.status;
       renderCards();
     });
   });
