@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test — English Beginner</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f0f2f5; color: #1a1a2e; line-height: 1.6;
+  min-height: 100vh; min-height: 100dvh;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 700px; margin: 0 auto; padding: 20px 16px; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #6c5ce7; text-decoration: none; font-weight: 600;
+  font-size: .95rem; margin-bottom: 16px; padding: 6px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-link:hover { text-decoration: underline; }
+
+.test-header { margin-bottom: 16px; }
+.test-header h1 { font-size: 1.4rem; color: #2d3436; }
+.test-header p { font-size: .85rem; color: #636e72; margin-top: 2px; }
+
+.progress-bar { background: #dfe6e9; border-radius: 8px; height: 8px; margin-bottom: 24px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #6c5ce7, #a29bfe); border-radius: 8px; transition: width .3s ease; width: 0; }
+
+.question-card {
+  background: #fff; border-radius: 16px; padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+}
+.q-counter { font-size: .82rem; color: #636e72; margin-bottom: 6px; font-weight: 500; }
+.q-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color: #2d3436; }
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt-btn {
+  background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 12px;
+  padding: 14px 16px; font-size: 1rem; cursor: pointer; text-align: left;
+  transition: all .15s; -webkit-tap-highlight-color: transparent;
+  font-family: inherit; color: #2d3436; line-height: 1.4;
+  -webkit-appearance: none; appearance: none;
+}
+.opt-btn:hover { border-color: #6c5ce7; background: #f0edff; }
+.opt-btn:active { transform: scale(.98); }
+.opt-btn.correct { border-color: #00b894; background: #d4fce8; color: #004d30; }
+.opt-btn.wrong { border-color: #d63031; background: #ffe0e0; color: #6b1010; }
+.opt-btn.dimmed { opacity: .55; pointer-events: none; }
+.opt-btn.correct.dimmed { opacity: 1; }
+.opt-btn.locked { pointer-events: none; }
+
+.next-btn {
+  display: none; margin-top: 18px; width: 100%;
+  background: #6c5ce7; color: #fff; border: none;
+  padding: 14px 24px; border-radius: 12px; font-size: 1rem;
+  cursor: pointer; font-weight: 600; font-family: inherit;
+  transition: background .15s; -webkit-tap-highlight-color: transparent;
+}
+.next-btn:hover { background: #5a4bd1; }
+.next-btn:active { background: #4834c5; }
+
+/* Result */
+.result-card {
+  background: #fff; border-radius: 16px; padding: 32px 24px;
+  text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,.07);
+}
+.result-emoji { font-size: 3.5rem; margin-bottom: 8px; }
+.result-score { font-size: 2.8rem; font-weight: 700; color: #6c5ce7; }
+.result-pct { font-size: 1.2rem; color: #636e72; margin: 6px 0 16px; }
+.result-msg { font-size: 1.05rem; margin-bottom: 8px; }
+.result-best { font-size: .85rem; color: #00b894; margin-bottom: 20px; }
+.result-prev { font-size: .85rem; color: #636e72; margin-bottom: 20px; }
+
+.btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-row a, .btn-row button {
+  padding: 13px 24px; border-radius: 12px; font-size: 1rem;
+  cursor: pointer; font-weight: 600; border: none; text-decoration: none;
+  font-family: inherit; -webkit-tap-highlight-color: transparent;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.btn-retry { background: #6c5ce7; color: #fff; }
+.btn-retry:hover { background: #5a4bd1; }
+.btn-home { background: #e9ecef; color: #2d3436; }
+.btn-home:hover { background: #d5dbe0; }
+
+@media (max-width: 600px) {
+  .wrap { padding: 12px 10px; }
+  .test-header h1 { font-size: 1.15rem; }
+  .question-card { padding: 18px 14px; border-radius: 14px; }
+  .q-text { font-size: 1.05rem; margin-bottom: 16px; }
+  .opt-btn { padding: 13px 14px; font-size: .95rem; border-radius: 10px; }
+  .next-btn { padding: 13px 20px; border-radius: 10px; }
+  .result-card { padding: 24px 16px; }
+  .result-score { font-size: 2.2rem; }
+  .btn-row { flex-direction: column; }
+  .btn-row a, .btn-row button { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">&larr; К списку тестов</a>
+  <div class="test-header">
+    <h1 id="test-title"></h1>
+    <p id="test-desc"></p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div id="area"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function() {
+  var testId = parseInt(new URLSearchParams(location.search).get('id'));
+  var test = tests.find(function(t) { return t.id === testId; });
+  if (!test) { location.href = 'index.html'; return; }
+
+  document.title = test.title + ' — English Test';
+  document.getElementById('test-title').textContent = test.title;
+  document.getElementById('test-desc').textContent = test.desc;
+
+  // Shuffle options
+  var shuffled = test.questions.map(function(q) {
+    var indices = q.opts.map(function(_, i) { return i; });
+    for (var i = indices.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
+    }
+    return {
+      q: q.q,
+      opts: indices.map(function(i) { return q.opts[i]; }),
+      correctIdx: indices.indexOf(q.ans)
+    };
+  });
+
+  var qIndex = 0, correctCount = 0;
+  var total = shuffled.length;
+
+  function render() {
+    document.getElementById('progress').style.width = ((qIndex / total) * 100) + '%';
+    if (qIndex >= total) { showResult(); return; }
+    var q = shuffled[qIndex];
+    document.getElementById('area').innerHTML =
+      '<div class="question-card">' +
+        '<div class="q-counter">Вопрос ' + (qIndex + 1) + ' из ' + total + '</div>' +
+        '<div class="q-text">' + q.q + '</div>' +
+        '<div class="options" id="opts">' +
+          q.opts.map(function(o, i) {
+            return '<button class="opt-btn" data-i="' + i + '">' + o + '</button>';
+          }).join('') +
+        '</div>' +
+        '<button class="next-btn" id="next-btn">Далее &rarr;</button>' +
+      '</div>';
+
+    var btns = document.querySelectorAll('.opt-btn');
+    btns.forEach(function(btn) {
+      btn.addEventListener('click', function() { answer(parseInt(btn.dataset.i)); });
+    });
+    document.getElementById('next-btn').addEventListener('click', function() {
+      qIndex++;
+      render();
+    });
+  }
+
+  function answer(idx) {
+    var q = shuffled[qIndex];
+    var btns = document.querySelectorAll('.opt-btn');
+    btns.forEach(function(b, i) {
+      b.classList.add('locked');
+      if (i === q.correctIdx) b.classList.add('correct');
+      else b.classList.add('dimmed');
+      if (i === idx && idx !== q.correctIdx) { b.classList.remove('dimmed'); b.classList.add('wrong'); }
+    });
+    if (idx === q.correctIdx) correctCount++;
+    document.getElementById('next-btn').style.display = 'block';
+  }
+
+  function showResult() {
+    var pct = Math.round((correctCount / total) * 100);
+    saveBest(test.id, pct, correctCount, total);
+    var best = getBestResults()[test.id];
+    var isNewBest = best.pct === pct;
+
+    var msg, emoji;
+    if (pct >= 90) { msg = 'Отлично!'; emoji = '&#127942;'; }
+    else if (pct >= 70) { msg = 'Хороший результат!'; emoji = '&#128170;'; }
+    else if (pct >= 50) { msg = 'Неплохо, но можно лучше'; emoji = '&#128221;'; }
+    else { msg = 'Стоит повторить тему'; emoji = '&#128218;'; }
+
+    document.getElementById('progress').style.width = '100%';
+    document.getElementById('area').innerHTML =
+      '<div class="result-card">' +
+        '<div class="result-emoji">' + emoji + '</div>' +
+        '<div class="result-score">' + correctCount + ' / ' + total + '</div>' +
+        '<div class="result-pct">' + pct + '% правильных ответов</div>' +
+        '<div class="result-msg">' + msg + '</div>' +
+        (isNewBest
+          ? '<div class="result-best">Новый лучший результат!</div>'
+          : '<div class="result-prev">Лучший: ' + best.pct + '% (' + best.date + ')</div>') +
+        '<div class="btn-row">' +
+          '<button class="btn-retry" onclick="location.reload()">Пройти заново</button>' +
+          '<a class="btn-home" href="index.html">К списку</a>' +
+        '</div>' +
+      '</div>';
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
