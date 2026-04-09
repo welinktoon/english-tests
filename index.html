@@ -281,11 +281,11 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
     }).join('');
   }
 
-  // Filter buttons
-  var filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(function(btn) {
+  // Diff filter buttons
+  var diffBtns = document.querySelectorAll('#diff-filters .filter-btn');
+  diffBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
-      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      diffBtns.forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
       activeDiff = btn.dataset.diff;
       renderCards();
