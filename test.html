@@ -5,74 +5,137 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Test — English Beginner</title>
 <style>
+:root {
+  --bg: #f0f2f5;
+  --text: #1a1a2e;
+  --text-heading: #2d3436;
+  --text-secondary: #636e72;
+  --card-bg: #fff;
+  --card-shadow: rgba(0,0,0,.07);
+  --progress-bg: #dfe6e9;
+  --opt-bg: #f8f9fa;
+  --opt-border: #e9ecef;
+  --opt-hover-bg: #f0edff;
+  --accent: #6c5ce7;
+  --accent-hover: #5a4bd1;
+  --accent-active: #4834c5;
+  --btn-home-bg: #e9ecef;
+  --btn-home-color: #2d3436;
+  --btn-home-hover: #d5dbe0;
+  --correct-border: #00b894;
+  --correct-bg: #d4fce8;
+  --correct-color: #004d30;
+  --wrong-border: #d63031;
+  --wrong-bg: #ffe0e0;
+  --wrong-color: #6b1010;
+}
+[data-theme="dark"] {
+  --bg: #1a1a2e;
+  --text: #e0e0e0;
+  --text-heading: #e0e0e0;
+  --text-secondary: #a0a0b0;
+  --card-bg: #2d2d44;
+  --card-shadow: rgba(0,0,0,.25);
+  --progress-bg: #353550;
+  --opt-bg: #353550;
+  --opt-border: #454560;
+  --opt-hover-bg: #3d3a5c;
+  --accent: #7c6cf7;
+  --accent-hover: #6a5ce7;
+  --accent-active: #5a4cd7;
+  --btn-home-bg: #353550;
+  --btn-home-color: #e0e0e0;
+  --btn-home-hover: #454560;
+  --correct-border: #00b894;
+  --correct-bg: #1a3d2e;
+  --correct-color: #55efc4;
+  --wrong-border: #d63031;
+  --wrong-bg: #3d1a1a;
+  --wrong-color: #ff7675;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: #f0f2f5; color: #1a1a2e; line-height: 1.6;
+  background: var(--bg); color: var(--text); line-height: 1.6;
   min-height: 100vh; min-height: 100dvh;
   -webkit-text-size-adjust: 100%;
+  transition: background .3s, color .3s;
 }
 .wrap { max-width: 700px; margin: 0 auto; padding: 20px 16px; }
 
 .back-link {
   display: inline-flex; align-items: center; gap: 6px;
-  color: #6c5ce7; text-decoration: none; font-weight: 600;
+  color: var(--accent); text-decoration: none; font-weight: 600;
   font-size: .95rem; margin-bottom: 16px; padding: 6px 0;
   -webkit-tap-highlight-color: transparent;
 }
 .back-link:hover { text-decoration: underline; }
 
 .test-header { margin-bottom: 16px; }
-.test-header h1 { font-size: 1.4rem; color: #2d3436; }
-.test-header p { font-size: .85rem; color: #636e72; margin-top: 2px; }
+.test-header h1 { font-size: 1.4rem; color: var(--text-heading); display: inline; }
+.test-header p { font-size: .85rem; color: var(--text-secondary); margin-top: 2px; }
 
-.progress-bar { background: #dfe6e9; border-radius: 8px; height: 8px; margin-bottom: 24px; overflow: hidden; }
+.diff-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: .72rem; font-weight: 600; vertical-align: middle;
+  margin-left: 10px; text-transform: uppercase; letter-spacing: .3px;
+}
+.diff-badge.easy { background: #d4fce8; color: #004d30; }
+.diff-badge.medium { background: #ffeaa7; color: #6c5200; }
+.diff-badge.hard { background: #ffe0e0; color: #6b1010; }
+[data-theme="dark"] .diff-badge.easy { background: #1a3d2e; color: #55efc4; }
+[data-theme="dark"] .diff-badge.medium { background: #3d3200; color: #ffeaa7; }
+[data-theme="dark"] .diff-badge.hard { background: #3d1a1a; color: #ff7675; }
+
+.progress-bar { background: var(--progress-bg); border-radius: 8px; height: 8px; margin-bottom: 24px; overflow: hidden; transition: background .3s; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, #6c5ce7, #a29bfe); border-radius: 8px; transition: width .3s ease; width: 0; }
 
 .question-card {
-  background: #fff; border-radius: 16px; padding: 24px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  background: var(--card-bg); border-radius: 16px; padding: 24px;
+  box-shadow: 0 2px 12px var(--card-shadow);
+  transition: background .3s, box-shadow .3s;
 }
-.q-counter { font-size: .82rem; color: #636e72; margin-bottom: 6px; font-weight: 500; }
-.q-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color: #2d3436; }
+.q-counter { font-size: .82rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+.q-text { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color: var(--text-heading); }
 
 .options { display: flex; flex-direction: column; gap: 10px; }
 .opt-btn {
-  background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 12px;
+  background: var(--opt-bg); border: 2px solid var(--opt-border); border-radius: 12px;
   padding: 14px 16px; font-size: 1rem; cursor: pointer; text-align: left;
   transition: all .15s; -webkit-tap-highlight-color: transparent;
-  font-family: inherit; color: #2d3436; line-height: 1.4;
+  font-family: inherit; color: var(--text); line-height: 1.4;
   -webkit-appearance: none; appearance: none;
 }
-.opt-btn:hover { border-color: #6c5ce7; background: #f0edff; }
+.opt-btn:hover { border-color: var(--accent); background: var(--opt-hover-bg); }
 .opt-btn:active { transform: scale(.98); }
-.opt-btn.correct { border-color: #00b894; background: #d4fce8; color: #004d30; }
-.opt-btn.wrong { border-color: #d63031; background: #ffe0e0; color: #6b1010; }
+.opt-btn.correct { border-color: var(--correct-border); background: var(--correct-bg); color: var(--correct-color); }
+.opt-btn.wrong { border-color: var(--wrong-border); background: var(--wrong-bg); color: var(--wrong-color); }
 .opt-btn.dimmed { opacity: .55; pointer-events: none; }
 .opt-btn.correct.dimmed { opacity: 1; }
 .opt-btn.locked { pointer-events: none; }
 
 .next-btn {
   display: none; margin-top: 18px; width: 100%;
-  background: #6c5ce7; color: #fff; border: none;
+  background: var(--accent); color: #fff; border: none;
   padding: 14px 24px; border-radius: 12px; font-size: 1rem;
   cursor: pointer; font-weight: 600; font-family: inherit;
   transition: background .15s; -webkit-tap-highlight-color: transparent;
 }
-.next-btn:hover { background: #5a4bd1; }
-.next-btn:active { background: #4834c5; }
+.next-btn:hover { background: var(--accent-hover); }
+.next-btn:active { background: var(--accent-active); }
 
 /* Result */
 .result-card {
-  background: #fff; border-radius: 16px; padding: 32px 24px;
-  text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  background: var(--card-bg); border-radius: 16px; padding: 32px 24px;
+  text-align: center; box-shadow: 0 2px 12px var(--card-shadow);
+  transition: background .3s, box-shadow .3s;
 }
 .result-emoji { font-size: 3.5rem; margin-bottom: 8px; }
-.result-score { font-size: 2.8rem; font-weight: 700; color: #6c5ce7; }
-.result-pct { font-size: 1.2rem; color: #636e72; margin: 6px 0 16px; }
+.result-score { font-size: 2.8rem; font-weight: 700; color: var(--accent); }
+.result-pct { font-size: 1.2rem; color: var(--text-secondary); margin: 6px 0 16px; }
 .result-msg { font-size: 1.05rem; margin-bottom: 8px; }
 .result-best { font-size: .85rem; color: #00b894; margin-bottom: 20px; }
-.result-prev { font-size: .85rem; color: #636e72; margin-bottom: 20px; }
+.result-prev { font-size: .85rem; color: var(--text-secondary); margin-bottom: 20px; }
 
 .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .btn-row a, .btn-row button {
@@ -81,10 +144,10 @@ body {
   font-family: inherit; -webkit-tap-highlight-color: transparent;
   display: inline-flex; align-items: center; justify-content: center;
 }
-.btn-retry { background: #6c5ce7; color: #fff; }
-.btn-retry:hover { background: #5a4bd1; }
-.btn-home { background: #e9ecef; color: #2d3436; }
-.btn-home:hover { background: #d5dbe0; }
+.btn-retry { background: var(--accent); color: #fff; }
+.btn-retry:hover { background: var(--accent-hover); }
+.btn-home { background: var(--btn-home-bg); color: var(--btn-home-color); }
+.btn-home:hover { background: var(--btn-home-hover); }
 
 @media (max-width: 600px) {
   .wrap { padding: 12px 10px; }
@@ -99,12 +162,21 @@ body {
   .btn-row a, .btn-row button { width: 100%; }
 }
 </style>
+<script>
+// Apply theme before render to avoid flash
+(function() {
+  var m = document.cookie.match('(?:^|; )eng_theme=([^;]*)');
+  if (m && decodeURIComponent(m[1]).replace(/"/g, '') === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+</script>
 </head>
 <body>
 <div class="wrap">
   <a class="back-link" href="index.html">&larr; К списку тестов</a>
   <div class="test-header">
-    <h1 id="test-title"></h1>
+    <h1 id="test-title"></h1><span class="diff-badge" id="diff-badge"></span>
     <p id="test-desc"></p>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
@@ -122,17 +194,33 @@ body {
   document.getElementById('test-title').textContent = test.title;
   document.getElementById('test-desc').textContent = test.desc;
 
-  // Shuffle options
+  // Difficulty badge
+  if (test.difficulty) {
+    var badge = document.getElementById('diff-badge');
+    var labels = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+    badge.textContent = labels[test.difficulty] || test.difficulty;
+    badge.classList.add(test.difficulty);
+  }
+
+  // Prepare questions: support both old format and new vars format
   var shuffled = test.questions.map(function(q) {
-    var indices = q.opts.map(function(_, i) { return i; });
+    var picked;
+    if (q.vars && q.vars.length) {
+      // New format: pick random variation
+      picked = q.vars[Math.floor(Math.random() * q.vars.length)];
+    } else {
+      // Old format: use question directly
+      picked = q;
+    }
+    var indices = picked.opts.map(function(_, i) { return i; });
     for (var i = indices.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
     }
     return {
-      q: q.q,
-      opts: indices.map(function(i) { return q.opts[i]; }),
-      correctIdx: indices.indexOf(q.ans)
+      q: picked.q,
+      opts: indices.map(function(i) { return picked.opts[i]; }),
+      correctIdx: indices.indexOf(picked.ans)
     };
   });
 

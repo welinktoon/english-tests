@@ -1,52 +1,119 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Tests — Beginner</title>
 <style>
+:root {
+  --bg: #f0f2f5;
+  --card-bg: #fff;
+  --text: #1a1a2e;
+  --text-secondary: #636e72;
+  --heading: #2d3436;
+  --accent: #6c5ce7;
+  --card-shadow: rgba(0,0,0,.06);
+  --card-hover-shadow: rgba(108,92,231,.15);
+  --section-border: #dfe6e9;
+}
+[data-theme="dark"] {
+  --bg: #1a1a2e;
+  --card-bg: #2d2d44;
+  --text: #e0e0e0;
+  --text-secondary: #a0a0b8;
+  --heading: #e0e0e0;
+  --accent: #6c5ce7;
+  --card-shadow: rgba(0,0,0,.2);
+  --card-hover-shadow: rgba(108,92,231,.3);
+  --section-border: #3d3d5c;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: #f0f2f5; color: #1a1a2e; line-height: 1.6;
+  background: var(--bg); color: var(--text); line-height: 1.6;
   min-height: 100vh; min-height: 100dvh;
   -webkit-text-size-adjust: 100%;
+  transition: background .3s, color .3s;
 }
 .wrap { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
 
-header { text-align: center; padding: 24px 0 12px; }
-header h1 { font-size: 1.8rem; color: #2d3436; }
-header p { color: #636e72; margin-top: 4px; font-size: .95rem; }
+header { text-align: center; padding: 24px 0 12px; position: relative; }
+header h1 { font-size: 1.8rem; color: var(--heading); }
+header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
+
+/* Theme toggle */
+.theme-toggle {
+  position: absolute; right: 0; top: 24px;
+  display: flex; align-items: center; gap: 8px;
+}
+.theme-toggle .icon { font-size: 1.1rem; line-height: 1; }
+.toggle-switch {
+  position: relative; width: 48px; height: 26px;
+  background: #dfe6e9; border-radius: 13px;
+  cursor: pointer; transition: background .3s;
+  border: none; outline: none; padding: 0;
+}
+[data-theme="dark"] .toggle-switch { background: #6c5ce7; }
+.toggle-switch::after {
+  content: ''; position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  background: #fff; border-radius: 50%;
+  transition: transform .3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+[data-theme="dark"] .toggle-switch::after {
+  transform: translateX(22px);
+}
 
 .stats {
   display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
   margin: 20px 0;
 }
 .stat-item {
-  background: #fff; border-radius: 12px; padding: 14px 24px;
-  text-align: center; min-width: 130px; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  background: var(--card-bg); border-radius: 12px; padding: 14px 24px;
+  text-align: center; min-width: 130px;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  transition: background .3s, box-shadow .3s;
 }
-.stat-item .val { font-size: 1.6rem; font-weight: 700; color: #6c5ce7; }
-.stat-item .lbl { font-size: .8rem; color: #636e72; margin-top: 2px; }
+.stat-item .val { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+.stat-item .lbl { font-size: .8rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* Difficulty sections */
+.difficulty-section { margin-top: 28px; }
+.difficulty-section:first-of-type { margin-top: 20px; }
+.section-title {
+  font-size: 1.15rem; font-weight: 700; color: var(--heading);
+  margin-bottom: 12px; padding-bottom: 6px;
+  border-bottom: 2px solid var(--section-border);
+  display: flex; align-items: center; gap: 8px;
+}
+.section-count {
+  font-size: .8rem; font-weight: 400; color: var(--text-secondary);
+}
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px; margin-top: 20px;
+  gap: 14px;
 }
 .card {
-  background: #fff; border-radius: 14px; padding: 20px;
+  background: var(--card-bg); border-radius: 14px; padding: 20px;
   border: 2px solid transparent; transition: all .2s;
   display: flex; flex-direction: column; justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  box-shadow: 0 2px 8px var(--card-shadow);
   text-decoration: none; color: inherit;
   min-height: 120px;
 }
-.card:hover { border-color: #6c5ce7; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,92,231,.15); }
+.card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px var(--card-hover-shadow); }
 .card:active { transform: translateY(0); }
-.card h3 { font-size: 1.05rem; margin-bottom: 4px; color: #2d3436; }
-.card .desc { font-size: .85rem; color: #636e72; flex-grow: 1; }
+.card .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.card h3 { font-size: 1.05rem; color: var(--heading); }
+.card .desc { font-size: .85rem; color: var(--text-secondary); flex-grow: 1; }
 .card .bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 8px; }
+
+/* Result badges */
 .badge {
   display: inline-block; padding: 4px 12px; border-radius: 20px;
   font-size: .78rem; font-weight: 600; white-space: nowrap;
@@ -55,19 +122,33 @@ header p { color: #636e72; margin-top: 4px; font-size: .95rem; }
 .badge.low { background: #ffeaa7; color: #6c5200; }
 .badge.mid { background: #81ecec; color: #005f5f; }
 .badge.high { background: #55efc4; color: #004d30; }
+[data-theme="dark"] .badge.none { background: #3d3d5c; color: #a0a0b8; }
+
+/* Difficulty badges */
+.diff-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: .7rem; font-weight: 600; white-space: nowrap;
+  line-height: 1.4;
+}
+.diff-badge.easy { background: #00b894; color: #fff; }
+.diff-badge.medium { background: #fdcb6e; color: #6c5200; }
+.diff-badge.hard { background: #e17055; color: #fff; }
+
 .arrow { font-size: 1.2rem; color: #b2bec3; transition: color .2s; }
-.card:hover .arrow { color: #6c5ce7; }
+.card:hover .arrow { color: var(--accent); }
 
 @media (max-width: 600px) {
   .wrap { padding: 12px 10px; }
   header { padding: 16px 0 8px; }
   header h1 { font-size: 1.35rem; }
   header p { font-size: .85rem; }
+  .theme-toggle { top: 16px; }
   .stats { gap: 8px; }
   .stat-item { padding: 10px 16px; min-width: 100px; flex: 1; }
   .stat-item .val { font-size: 1.3rem; }
-  .grid { grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+  .grid { grid-template-columns: 1fr; gap: 10px; }
   .card { padding: 16px; min-height: 100px; border-radius: 12px; }
+  .difficulty-section { margin-top: 20px; }
 }
 </style>
 </head>
@@ -76,34 +157,89 @@ header p { color: #636e72; margin-top: 4px; font-size: .95rem; }
   <header>
     <h1>English Tests</h1>
     <p>Beginner — выбери тему и проверь знания</p>
+    <div class="theme-toggle">
+      <span class="icon sun">&#9728;</span>
+      <button class="toggle-switch" id="theme-btn" aria-label="Переключить тему"></button>
+      <span class="icon moon">&#9790;</span>
+    </div>
   </header>
   <div class="stats" id="global-stats"></div>
-  <div class="grid" id="topics-grid"></div>
+  <div id="topics-container"></div>
 </div>
 
 <script src="data.js"></script>
 <script>
 (function() {
-  const best = getBestResults();
-  const done = Object.keys(best).length;
-  const avgPct = done ? Math.round(Object.values(best).reduce((s, b) => s + b.pct, 0) / done) : 0;
+  // Theme
+  function getThemeCookie() {
+    var m = document.cookie.match('(?:^|; )eng_theme=([^;]*)');
+    return m ? m[1] : null;
+  }
+  function setThemeCookie(theme) {
+    var d = new Date();
+    d.setTime(d.getTime() + 365 * 86400000);
+    document.cookie = 'eng_theme=' + theme + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+  }
+  var saved = getThemeCookie();
+  if (saved === 'dark' || saved === 'light') {
+    document.documentElement.setAttribute('data-theme', saved);
+  }
+  document.getElementById('theme-btn').addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    setThemeCookie(next);
+  });
+
+  // Stats
+  var best = getBestResults();
+  var done = Object.keys(best).length;
+  var avgPct = done ? Math.round(Object.values(best).reduce(function(s, b) { return s + b.pct; }, 0) / done) : 0;
 
   document.getElementById('global-stats').innerHTML =
     '<div class="stat-item"><div class="val">' + done + '/' + tests.length + '</div><div class="lbl">Пройдено тестов</div></div>' +
     '<div class="stat-item"><div class="val">' + avgPct + '%</div><div class="lbl">Средний результат</div></div>';
 
-  document.getElementById('topics-grid').innerHTML = tests.map(function(t) {
-    var b = best[t.id];
-    var badgeClass = 'none', badgeText = 'не пройден';
-    if (b) {
-      badgeText = b.pct + '% (' + b.score + '/' + b.total + ')';
-      badgeClass = b.pct >= 80 ? 'high' : b.pct >= 50 ? 'mid' : 'low';
-    }
-    return '<a class="card" href="test.html?id=' + t.id + '">' +
-      '<div><h3>' + t.id + '. ' + t.title + '</h3><div class="desc">' + t.desc + '</div></div>' +
-      '<div class="bottom"><span class="badge ' + badgeClass + '">' + badgeText + '</span><span class="arrow">&rarr;</span></div>' +
-    '</a>';
-  }).join('');
+  // Group by difficulty
+  var groups = { easy: [], medium: [], hard: [] };
+  tests.forEach(function(t) {
+    var diff = t.difficulty || 'easy';
+    if (!groups[diff]) groups[diff] = [];
+    groups[diff].push(t);
+  });
+
+  var diffLabels = {
+    easy:   { title: 'Легкие', badge: 'Легкий' },
+    medium: { title: 'Средние', badge: 'Средний' },
+    hard:   { title: 'Сложные', badge: 'Сложный' }
+  };
+
+  var html = '';
+  ['easy', 'medium', 'hard'].forEach(function(diff) {
+    var list = groups[diff];
+    if (!list || !list.length) return;
+    var label = diffLabels[diff];
+    html += '<div class="difficulty-section">';
+    html += '<div class="section-title">' + label.title + ' <span class="section-count">(' + list.length + ')</span></div>';
+    html += '<div class="grid">';
+    list.forEach(function(t) {
+      var b = best[t.id];
+      var badgeClass = 'none', badgeText = 'не пройден';
+      if (b) {
+        badgeText = b.pct + '% (' + b.score + '/' + b.total + ')';
+        badgeClass = b.pct >= 80 ? 'high' : b.pct >= 50 ? 'mid' : 'low';
+      }
+      html += '<a class="card" href="test.html?id=' + t.id + '">' +
+        '<div><div class="card-header"><h3>' + t.id + '. ' + t.title + '</h3>' +
+        '<span class="diff-badge ' + diff + '">' + label.badge + '</span></div>' +
+        '<div class="desc">' + t.desc + '</div></div>' +
+        '<div class="bottom"><span class="badge ' + badgeClass + '">' + badgeText + '</span><span class="arrow">&rarr;</span></div>' +
+        '</a>';
+    });
+    html += '</div></div>';
+  });
+
+  document.getElementById('topics-container').innerHTML = html;
 })();
 </script>
 </body>
