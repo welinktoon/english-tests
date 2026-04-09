@@ -107,11 +107,11 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
   display: flex; flex-direction: column; justify-content: space-between;
   box-shadow: 0 2px 8px var(--card-shadow);
   text-decoration: none; color: inherit;
-  min-height: 120px;
+  min-height: 120px; position: relative;
 }
 .card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px var(--card-hover-shadow); }
 .card:active { transform: translateY(0); }
-.card .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.card .card-header { margin-bottom: 4px; padding-right: 70px; }
 .card h3 { font-size: 1.05rem; color: var(--heading); }
 .card .desc { font-size: .85rem; color: var(--text-secondary); flex-grow: 1; }
 .card .bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 8px; }
@@ -129,7 +129,8 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
 
 /* Difficulty badges */
 .diff-badge {
-  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  position: absolute; top: 12px; right: 12px;
+  padding: 2px 8px; border-radius: 10px;
   font-size: .7rem; font-weight: 600; white-space: nowrap;
   line-height: 1.4;
 }
