@@ -42,7 +42,8 @@ body {
 .wrap { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
 
 header { text-align: center; padding: 24px 0 12px; position: relative; }
-header h1 { font-size: 1.8rem; color: var(--heading); }
+header h1 { font-size: 1.8rem; color: var(--heading); display: flex; align-items: center; justify-content: center; gap: 10px; }
+header h1 img { width: 40px; height: 40px; border-radius: 10px; }
 header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
 
 /* Theme toggle */
@@ -181,7 +182,7 @@ header p { color: var(--text-secondary); margin-top: 4px; font-size: .95rem; }
 <body>
 <div class="wrap">
   <header>
-    <h1>English Tests</h1>
+    <h1><img src="favicon.png" alt="">English Tests</h1>
     <p>Beginner — выбери тему и проверь знания</p>
     <div class="theme-toggle">
       <span class="icon sun">&#9728;</span>
